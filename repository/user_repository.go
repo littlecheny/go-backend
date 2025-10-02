@@ -25,7 +25,15 @@ func NewUserRepository(db mongo.Database, collection string) domain.UserReposito
 func (ur *userRepository) Create(c context.Context, user *domain.User) error {
 	collection := ur.database.Collection(ur.collection)
 
-	_, err := collection.InsertOne(c, user)
+	// 创建一个明确的BSON文档，确保字段名称正确
+	doc := bson.M{
+		"_id":      user.ID,
+		"name":     user.Name,
+		"email":    user.Email,
+		"password": user.Password,
+	}
+
+	_, err := collection.InsertOne(c, doc)
 
 	return err
 }
