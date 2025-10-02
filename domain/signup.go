@@ -10,14 +10,14 @@ type SignupRequest struct{
 	Password string `form:"password" binding:"required"`
 }
 
-type signupResponse struct{
+type SignupResponse struct{
 	AccessToken string `json: "accessToken"`
-	refreshToken string `json: "refreshToken"`
+	RefreshToken string `json: "refreshToken"`
 }
 
 type SignupUsecase interface{
 	Create(c context.Context, user *User) error
-	GetUserByEmail(c contex.Context, email string) (Userm error)
+	GetUserByEmail(c context.Context, email string) (User, error)
 	CreateAccessToken(user *User, secret string, expiry int) (accessToken string, err error)
 	CreateRefreshToken(user *User, secret string, expiry int) (refreshToken string, err error)
 }

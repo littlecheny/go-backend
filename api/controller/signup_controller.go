@@ -11,16 +11,16 @@ import (
 )
 
 type SignupController struct{
-	SignupUsercase domain.SignupUsecase
+	SignupUsecase domain.SignupUsecase
 	Env *bootstrap.Env
 }
 
 func (sc *SignupController) Signup(c *gin.Context) {
 	var request domain.SignupRequest
 
-	err := c.ShouldBlind(&request)
+	err := c.ShouldBind(&request)
 	if err != nil{
-		c.JSON(http.StattusBadRequest, domain.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
 		return
 	}
 
@@ -32,7 +32,7 @@ func (sc *SignupController) Signup(c *gin.Context) {
 
 	encryptedPassword, err := bcrypt.GenerateFromPassword(
 		[]byte(request.Password),
-		bcrypt.DefaultCose,
+		bcrypt.DefaultCost,
 	)
 	if err != nil{
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
@@ -42,10 +42,10 @@ func (sc *SignupController) Signup(c *gin.Context) {
 	request.Password = string(encryptedPassword)
 
 	user := domain.User{
-		ID: primitive.NewObjectionID(),
+		ID: primitive.NewObjectID(),
 		Name: request.Name,
-		Email: request.Email
-		Password: request.Password
+		Email: request.Email,
+		Password: request.Password,
 	}
 
 	err = sc.SignupUsecase.Create(c, &user)
@@ -67,9 +67,9 @@ func (sc *SignupController) Signup(c *gin.Context) {
 		return
 	}
 
-	signupResponse := domain.signupResponse{
+	signupResponse := domain.SignupResponse{
 		AccessToken: accessToken,
-		refreshToken: refreshToken,
+		RefreshToken: refreshToken,
 	}
 
 	c.JSON(http.StatusOK, signupResponse)

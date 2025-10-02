@@ -8,7 +8,7 @@ import(
 type Env struct{
 	AppEnv			string `mapstructure:"APP_ENV"`
 	ServerAddress   string `mapstructure:"SERVER_ADDRESS"`
-	ContextTimeout  string `mapstructure:"CONTEXT_TIMEOUT"`
+	ContextTimeout  int `mapstructure:"CONTEXT_TIMEOUT"`
 	DBHost			string `mapstructure:"DB_HOST"`
 	DBPort			string `mapstructure:"DB_PORT"`
 	DBUser			string `mapstructure:"DB_USER"`
@@ -29,9 +29,9 @@ func NewEnv() *Env {
 		log.Fatal("Can't find the file .env: ", err)
 	}
 
-	err = viper.Unmarshl(&env)
+	err = viper.Unmarshal(&env)
 	if err != nil {
-		log.Fatal("Environment can't be loaded: " err)
+		log.Fatal("Environment can't be loaded: ", err)
 	}
 
 	if env.AppEnv == "development" {

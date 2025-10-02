@@ -1,0 +1,25 @@
+# Mockery v3 Configuration File
+# Place this file in your project root directory as .mockery.yaml
+
+packages:
+  # Generate mocks for domain package (usecase and repository)
+  github.com/littlecheny/go-backend/domain:
+    config:
+      all: true
+      dir: "{{.InterfaceDir}}"
+      mockname: "Mock{{.InterfaceName}}"
+      filename: "mock_{{.InterfaceName}}.go"
+      output: "domain/mocks"
+      outpkg: mocks
+      with-expecter: true
+  
+  # Generate mocks for mongo package
+  github.com/littlecheny/go-backend/mongo:
+    config:
+      all: true
+      dir: "{{.InterfaceDir}}"
+      mockname: "Mock{{.InterfaceName}}"
+      filename: "mock_{{.InterfaceName}}.go"
+      output: "mongo/mocks"
+      outpkg: mocks
+      with-expecter: true
