@@ -18,6 +18,21 @@ type Env struct{
 	RefreshTokenExpiryHour int    `mapstructure:"REFRESH_TOKEN_EXPIRY_HOUR"`
 	AccessTokenSecret      string `mapstructure:"ACCESS_TOKEN_SECRET"`
 	RefreshTokenSecret     string `mapstructure:"REFRESH_TOKEN_SECRET"`
+	
+	// Redis配置
+	RedisHost     string `mapstructure:"REDIS_HOST"`
+	RedisPort     string `mapstructure:"REDIS_PORT"`
+	RedisPassword string `mapstructure:"REDIS_PASSWORD"`
+	RedisDB       int    `mapstructure:"REDIS_DB"`
+	
+	// 区块链配置
+	EthereumMainnetRPC string `mapstructure:"ETHEREUM_MAINNET_RPC"`
+	EthereumSepoliaRPC string `mapstructure:"ETHEREUM_SEPOLIA_RPC"`
+	EthereumGoerliRPC  string `mapstructure:"ETHEREUM_GOERLI_RPC"`
+	DefaultNetwork     string `mapstructure:"DEFAULT_NETWORK"`
+	
+	// 加密配置
+	WalletEncryptionKey string `mapstructure:"WALLET_ENCRYPTION_KEY"`
 }
 
 func NewEnv() *Env {
