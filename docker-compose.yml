@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    image: go-backend:latest
+    container_name: go-backend-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - redis
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logger:/home/app/logger
+      - ./.env:/home/app/.env:ro
+  mongo:
+    image: mongo:6.0
+    container_name: go-backend-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: ${DB_NAME}
+    ports:
+      - "27017:27017"
+  redis:
+    image: redis:7-alpine
+    container_name: go-backend-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"

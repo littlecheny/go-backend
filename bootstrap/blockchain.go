@@ -9,7 +9,7 @@ import (
 
 func InitBlockchain(ctx context.Context, env *Env, app *Application) error {
 
-	svc, err := services.NewEthereumSepoliaService(env.EthereumSepoliaRPCURL)
+	svc, err := services.NewEthereumSepoliaService(env.EthereumSepoliaRPCURL, env.WalletPrivateKeyHex)
 	if err != nil {
 		return err
 	}

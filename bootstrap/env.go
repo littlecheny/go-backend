@@ -28,6 +28,7 @@ type Env struct {
 	WalletAddress          string `mapstructure:"WALLET_ADDRESS"`
 	BalanceCacheTTLSeconds int    `mapstructure:"BALANCE_CACHE_TTL_SECONDS"`
 	BlockCacheTTLSeconds   int    `mapstructure:"BLOCK_CACHE_TTL_SECONDS"`
+	WalletPrivateKeyHex    string `mapstructure:"WALLET_PRIVATE_KEY_HEX"`
 }
 
 func NewEnv() *Env {

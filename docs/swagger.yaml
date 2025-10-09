@@ -1,0 +1,130 @@
+basePath: /
+definitions:
+  domain.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  domain.TransactionSendRequest:
+    properties:
+      from:
+        type: string
+      gas_limit:
+        type: string
+      gas_price:
+        type: string
+      to:
+        type: string
+      value:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Go backend with Ethereum tx queue and REST endpoints.
+  title: Go Backend API
+  version: "1.0"
+paths:
+  /tx/{hash}/status:
+    get:
+      description: 根据交易哈希查询区块链交易状态
+      parameters:
+      - description: 交易哈希
+        in: path
+        name: hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{hash, status}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: 查询交易状态
+      tags:
+      - tx
+  /tx/{taskID}:
+    get:
+      description: 根据 taskID 查询交易任务的当前状态与交易哈希
+      parameters:
+      - description: 任务ID
+        in: path
+        name: taskID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{task_id, tx_hash, status}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: 查询交易任务状态
+      tags:
+      - tx
+  /tx/send:
+    post:
+      consumes:
+      - application/json
+      description: 通过 Redis 队列异步发送交易，支持 Idempotency-Key 幂等；立即返回 task_id
+      parameters:
+      - description: 幂等键
+        in: header
+        name: Idempotency-Key
+        required: true
+        type: string
+      - description: 交易请求体
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.TransactionSendRequest'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: '{task_id, status}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: 发送以太坊交易（入队）
+      tags:
+      - tx
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

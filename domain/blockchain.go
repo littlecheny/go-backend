@@ -19,14 +19,11 @@ type Transaction struct {
 
 type EthereumService interface {
 	// 发送交易
-	//SendTransaction(ctx context.Context, req *TransactionSendRequest) (string, error)
-
+	SendTransaction(ctx context.Context, req *TransactionSendRequest) (string, error)
 	// 查询交易状态
 	GetTransactionStatus(ctx context.Context, hash string) (string, error)
-
 	// 查询余额
 	GetBalance(ctx context.Context, address string) (string, error)
-
 	// 查询最新区块高度
 	GetLatestBlockNumber(ctx context.Context) (uint64, error)
 }
