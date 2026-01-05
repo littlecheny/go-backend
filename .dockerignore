@@ -1,0 +1,52 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+logger/
+
+# Test coverage
+coverage.out
+coverage.html
+
+# Documentation
+docs/
+README.md
+LICENSE
+
+# Database files
+*.db
+*.sqlite
+
+# Cache
+.cache/
+
+# Go
+vendor/
+go.work
+

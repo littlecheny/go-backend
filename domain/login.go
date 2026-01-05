@@ -11,11 +11,11 @@ type LoginUsecase interface {
 }
 
 type LoginRequest struct {
-	Email    string `form: "email" binding:"required,email"`
-	Password string `form: "password" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=6"`
 }
 
 type LoginResponse struct {
-	AccessToken  string `json: "accessToken"`
-	RefreshToken string `json: "refreshToken"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
 }

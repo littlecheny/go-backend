@@ -47,7 +47,10 @@ func CloseMongoDBConnection(client mongo.Client) {
 		return
 	}
 
-	err := client.Disconnect(context.TODO())
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err := client.Disconnect(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -5,14 +5,14 @@ import (
 )
 
 type SignupRequest struct {
-	Name     string `form: "name" binding:"required"`
-	Email    string `form: "email" binding:"required,email"`
-	Password string `form:"password" binding:"required"`
+	Name     string `json:"name" binding:"required,min=2,max=50"`
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=6,max=128"`
 }
 
 type SignupResponse struct {
-	AccessToken  string `json: "accessToken"`
-	RefreshToken string `json: "refreshToken"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
 }
 
 type SignupUsecase interface {

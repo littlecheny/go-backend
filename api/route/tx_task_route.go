@@ -12,10 +12,12 @@ import (
 // @Summary 查询交易任务状态
 // @Description 根据 taskID 查询交易任务的当前状态与交易哈希
 // @Tags tx
+// @Security BearerAuth
 // @Produce json
 // @Param taskID path string true "任务ID"
 // @Success 200 {object} map[string]string "{task_id, tx_hash, status}"
 // @Failure 400 {object} domain.ErrorResponse
+// @Failure 404 {object} domain.ErrorResponse
 // @Failure 503 {object} domain.ErrorResponse
 // @Router /tx/{taskID} [get]
 func getTxTaskHandler(app bootstrap.Application) gin.HandlerFunc {
@@ -32,14 +34,27 @@ func getTxTaskHandler(app bootstrap.Application) gin.HandlerFunc {
 		}
 
 		ctx := c.Request.Context()
-		txHash, _ := app.Redis.Get(ctx, "task:hash:"+taskID).Result()
-		status, _ := app.Redis.Get(ctx, "task:status:"+taskID).Result()
+		
+		// 查询任务状态
+		status, err := app.Redis.Get(ctx, "task:status:"+taskID).Result()
+		if err != nil {
+			c.JSON(http.StatusNotFound, domain.ErrorResponse{Message: "task not found"})
+			return
+		}
 
-		c.JSON(http.StatusOK, gin.H{
+		// 查询交易哈希（可能不存在，如果交易还未发送）
+		txHash, _ := app.Redis.Get(ctx, "task:hash:"+taskID).Result()
+
+		response := gin.H{
 			"task_id": taskID,
-			"tx_hash": txHash,
 			"status":  status,
-		})
+		}
+
+		if txHash != "" {
+			response["tx_hash"] = txHash
+		}
+
+		c.JSON(http.StatusOK, response)
 	}
 }
 

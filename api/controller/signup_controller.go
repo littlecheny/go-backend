@@ -8,7 +8,6 @@ import (
 	"github.com/littlecheny/go-backend/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
-	"fmt"
 )
 
 type SignupController struct {
@@ -18,8 +17,6 @@ type SignupController struct {
 
 func (sc *SignupController) Signup(c *gin.Context) {
 	var request domain.SignupRequest
-
-	fmt.Println("Signup request body:", c.Request.Body) // Debugging line
 
 	err := c.ShouldBind(&request)
 	if err != nil {
@@ -39,7 +36,7 @@ func (sc *SignupController) Signup(c *gin.Context) {
 		}
 	} else {
 		// 用户存在，返回冲突错误
-		c.JSON(http.StatusConflict, domain.ErrorResponse{Message: "User already exists with given email1111"})
+		c.JSON(http.StatusConflict, domain.ErrorResponse{Message: "User already exists with the given email"})
 		return
 	}
 
@@ -54,17 +51,12 @@ func (sc *SignupController) Signup(c *gin.Context) {
 
 	request.Password = string(encryptedPassword)
 
-	fmt.Println("Signup request received:", request.Name) // Debugging line
-	fmt.Println("Signup request email:", request.Email) // Debugging line
-
 	user := domain.User{
 		ID:       primitive.NewObjectID(),
 		Name:     request.Name,
 		Email:    request.Email,
 		Password: request.Password,
 	}
-
-	fmt.Println("User to be created:", user) // Debugging line
 
 	err = sc.SignupUsecase.Create(c, &user)
 
