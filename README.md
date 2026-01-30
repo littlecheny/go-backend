@@ -1,10 +1,10 @@
-# Go Backend - 企业级区块链交易系统
+# 区块链交易系统
 
 ![Go Version](https://img.shields.io/badge/Go-1.24.2-00ADD8?style=flat&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
 
-一个基于 Go 语言开发的企业级后端系统，集成 Ethereum 区块链交易处理、异步任务队列、JWT 认证等功能的 RESTful API 服务。
+一个基于 Go 语言开发的后端系统，集成 Ethereum 区块链交易处理、异步任务队列、JWT 认证等功能的 RESTful API 服务。
 
 ## 📋 目录
 
@@ -195,61 +195,15 @@ Background Worker (BRPOP)
 - MongoDB 6.0+
 - Redis 7+
 
-### 本地开发
 
-1. **克隆项目**
-```bash
-git clone https://github.com/littlecheny/go-backend.git
-cd go-backend
-```
 
-2. **配置环境变量**
-```bash
-# 从模板创建 .env 文件
-cp .env.example .env
 
-# 编辑 .env 文件，填入实际配置
-vim .env
-```
 
-3. **启动依赖服务**
-```bash
-docker-compose up -d mongo redis
-```
 
-4. **安装依赖**
-```bash
-go mod download
-```
 
-5. **生成 Swagger 文档**
-```bash
-# 安装 swag
-go install github.com/swaggo/swag/cmd/swag@latest
 
-# 生成文档
-swag init -g cmd/main.go
-```
 
-6. **运行服务**
-```bash
-go run cmd/main.go
-```
 
-服务将在 `http://localhost:8080` 启动
-
-### Docker 部署
-
-```bash
-# 构建并启动所有服务
-docker-compose up -d
-
-# 查看日志
-docker-compose logs -f api
-
-# 停止服务
-docker-compose down
-```
 
 ## 📖 API 文档
 
@@ -431,46 +385,7 @@ logger.Log.WithContext(ctx).WithFields(logrus.Fields{
 }).Info("Transaction sent successfully")
 ```
 
-## 🚧 未来规划
 
-- [ ] 支持多链（BSC, Polygon, Arbitrum）
-- [ ] WebSocket 实时推送交易状态
-- [ ] 交易批处理优化
-- [ ] GraphQL API 支持
-- [ ] Prometheus + Grafana 监控
-- [ ] ELK 日志聚合
-- [ ] Kubernetes 部署配置
-- [ ] CI/CD Pipeline（GitHub Actions）
-- [ ] 单元测试覆盖率提升至 80%+
 
-## 🤝 贡献指南
 
-欢迎贡献代码！请遵循以下步骤：
-
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启 Pull Request
-
-## 📝 许可证
-
-本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
-
-## 👨‍💻 作者
-
-**littlecheny**
-
-- GitHub: [@littlecheny](https://github.com/littlecheny)
-
-## 🙏 致谢
-
-- [Gin Web Framework](https://github.com/gin-gonic/gin)
-- [Go Ethereum](https://github.com/ethereum/go-ethereum)
-- [MongoDB Go Driver](https://github.com/mongodb/mongo-go-driver)
-- [go-redis](https://github.com/redis/go-redis)
-
----
-
-⭐ 如果这个项目对你有帮助，欢迎 Star！
 
