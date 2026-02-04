@@ -5,6 +5,48 @@ definitions:
       message:
         type: string
     type: object
+  domain.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  domain.LoginResponse:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
+  domain.SignupRequest:
+    properties:
+      email:
+        type: string
+      name:
+        maxLength: 50
+        minLength: 2
+        type: string
+      password:
+        maxLength: 128
+        minLength: 6
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  domain.SignupResponse:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
   domain.TransactionSendRequest:
     properties:
       from:
@@ -24,6 +66,112 @@ info:
   title: Go Backend API
   version: "1.0"
 paths:
+  /chain/block/latest:
+    get:
+      description: 查询区块链的最新区块高度（支持缓存）
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{block_number, cached}'
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 查询最新区块高度
+      tags:
+      - chain
+  /health:
+    get:
+      description: 检查服务健康状态
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 健康检查
+      tags:
+      - system
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 用户通过邮箱和密码登录，返回访问令牌和刷新令牌
+      parameters:
+      - description: 登录请求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: 用户登录
+      tags:
+      - auth
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: 新用户注册，创建账户并返回访问令牌和刷新令牌
+      parameters:
+      - description: 注册请求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SignupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SignupResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: 用户注册
+      tags:
+      - auth
   /tx/{hash}/status:
     get:
       description: 根据交易哈希查询区块链交易状态
@@ -51,35 +199,6 @@ paths:
           schema:
             $ref: '#/definitions/domain.ErrorResponse'
       summary: 查询交易状态
-      tags:
-      - tx
-  /tx/{taskID}:
-    get:
-      description: 根据 taskID 查询交易任务的当前状态与交易哈希
-      parameters:
-      - description: 任务ID
-        in: path
-        name: taskID
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{task_id, tx_hash, status}'
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/domain.ErrorResponse'
-        "503":
-          description: Service Unavailable
-          schema:
-            $ref: '#/definitions/domain.ErrorResponse'
-      summary: 查询交易任务状态
       tags:
       - tx
   /tx/send:
@@ -119,6 +238,72 @@ paths:
       summary: 发送以太坊交易（入队）
       tags:
       - tx
+  /tx/task/{taskID}:
+    get:
+      description: 根据 taskID 查询交易任务的当前状态与交易哈希
+      parameters:
+      - description: 任务ID
+        in: path
+        name: taskID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{task_id, tx_hash, status}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 查询交易任务状态
+      tags:
+      - tx
+  /wallet/balance/{address}:
+    get:
+      description: 查询指定地址的以太坊余额（支持缓存）
+      parameters:
+      - description: 钱包地址
+        in: path
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{address, balance}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 查询钱包余额
+      tags:
+      - wallet
 schemes:
 - http
 - https

@@ -28,14 +28,13 @@ bin/
 
 # Logs
 *.log
-logger/
+app.log
 
 # Test coverage
 coverage.out
 coverage.html
 
-# Documentation
-docs/
+# Documentation (keep swagger docs, exclude markdown)
 README.md
 LICENSE
 

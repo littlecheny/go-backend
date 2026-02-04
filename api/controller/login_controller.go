@@ -13,6 +13,19 @@ type LoginController struct {
 	Env *bootstrap.Env
 }
 
+// Login godoc
+// @Summary 用户登录
+// @Description 用户通过邮箱和密码登录，返回访问令牌和刷新令牌
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body domain.LoginRequest true "登录请求"
+// @Success 200 {object} domain.LoginResponse
+// @Failure 400 {object} domain.ErrorResponse
+// @Failure 401 {object} domain.ErrorResponse
+// @Failure 404 {object} domain.ErrorResponse
+// @Failure 500 {object} domain.ErrorResponse
+// @Router /login [post]
 func (lc *LoginController) Login(c *gin.Context){
 	var request domain.LoginRequest
 

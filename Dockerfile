@@ -1,15 +1,23 @@
-# syntax=docker/dockerfile:1
-
 # ---- Builder stage ----
 FROM golang:1.24 AS builder
 WORKDIR /app
 
+# 设置Go代理为国内镜像源（阿里云）
+ENV GOPROXY=https://mirrors.aliyun.com/goproxy/,https://goproxy.cn,direct
+ENV GO111MODULE=on
+
 # Cache deps
 COPY go.mod go.sum ./
-RUN --mount=type=cache,target=/go/pkg/mod go mod download
+RUN go mod download
+
+# Install swag for generating swagger docs
+RUN go install github.com/swaggo/swag/cmd/swag@latest
 
 # Copy source
 COPY . .
+
+# Generate swagger docs
+RUN /go/bin/swag init -g cmd/main.go
 
 # Build (static)
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server ./cmd/main.go

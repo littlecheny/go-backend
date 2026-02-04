@@ -23,6 +23,8 @@ services:
       MONGO_INITDB_DATABASE: ${DB_NAME}
     ports:
       - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
   redis:
     image: redis:7-alpine
     container_name: go-backend-redis
@@ -30,3 +32,11 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mongo_data:
+    driver: local
+  redis_data:
+    driver: local

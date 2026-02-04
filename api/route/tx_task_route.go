@@ -19,7 +19,7 @@ import (
 // @Failure 400 {object} domain.ErrorResponse
 // @Failure 404 {object} domain.ErrorResponse
 // @Failure 503 {object} domain.ErrorResponse
-// @Router /tx/{taskID} [get]
+// @Router /tx/task/{taskID} [get]
 func getTxTaskHandler(app bootstrap.Application) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		taskID := c.Param("taskID")
@@ -58,8 +58,8 @@ func getTxTaskHandler(app bootstrap.Application) gin.HandlerFunc {
 	}
 }
 
-// 查询任务：GET /tx/:taskID
+// 查询任务：GET /tx/task/:taskID
 // 返回：{ task_id, tx_hash, status }
 func NewTxTaskRouter(env *bootstrap.Env, app bootstrap.Application, router *gin.RouterGroup) {
-	router.GET(":taskID", getTxTaskHandler(app))
+	router.GET("/task/:taskID", getTxTaskHandler(app))
 }

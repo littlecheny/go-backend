@@ -15,6 +15,18 @@ type SignupController struct {
 	Env           *bootstrap.Env
 }
 
+// Signup godoc
+// @Summary 用户注册
+// @Description 新用户注册，创建账户并返回访问令牌和刷新令牌
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body domain.SignupRequest true "注册请求"
+// @Success 200 {object} domain.SignupResponse
+// @Failure 400 {object} domain.ErrorResponse
+// @Failure 409 {object} domain.ErrorResponse
+// @Failure 500 {object} domain.ErrorResponse
+// @Router /signup [post]
 func (sc *SignupController) Signup(c *gin.Context) {
 	var request domain.SignupRequest
 
